@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Business Diagnostic — Upstream</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#13B5A2;--teal-d:#12917E;--teal-l:#DCFAF5;
+  --navy:#132539;--navy-l:#2A3F54;--cream:#F9F8F5;
+  --bg:hsl(210 20% 98%);--surface:#fff;
+  --fg:hsl(215 40% 12%);--fg-m:hsl(215 15% 45%);
+  --border:hsl(210 20% 88%);
+  --fd:'Sora',system-ui,sans-serif;--fb:'Inter',system-ui,sans-serif;
+}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--fb);font-size:16px;line-height:1.6;background:var(--bg);color:var(--fg);min-height:100dvh;-webkit-font-smoothing:antialiased}
+.app{display:flex;flex-direction:column;height:100dvh;max-width:680px;margin:0 auto;background:var(--bg)}
+header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--surface);border-bottom:1px solid var(--border)}
+.logo{font-family:var(--fd);font-weight:700;font-size:18px;color:var(--navy);letter-spacing:-.02em}
+.logo span{color:var(--teal)}
+.hbadge{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-d);background:var(--teal-l);padding:4px 10px;border-radius:100px}
+.prog-track{height:3px;background:var(--border);flex-shrink:0}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-d));width:0%;transition:width .5s cubic-bezier(.4,0,.2,1)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.splash{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;background:linear-gradient(160deg,hsl(210 20% 98%) 0%,hsl(168 60% 95%) 100%);animation:fadeIn .4s ease both}
+.splash-eye{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-d);margin-bottom:16px}
+.splash-h{font-family:var(--fd);font-weight:700;font-size:clamp(22px,5vw,32px);line-height:1.15;color:var(--navy);letter-spacing:-.03em;max-width:460px;margin-bottom:16px}
+.splash-h em{font-style:normal;color:var(--teal)}
+.splash-b{font-size:15px;color:var(--fg-m);max-width:380px;line-height:1.7;margin-bottom:28px}
+.pills{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:32px}
+.pill{font-size:12px;font-weight:500;color:var(--navy-l);background:white;border:1px solid var(--border);padding:6px 14px;border-radius:100px}
+.dot{display:inline-block;width:6px;height:6px;background:var(--teal);border-radius:50%;margin-right:6px;vertical-align:middle;position:relative;top:-1px}
+.start-btn{font-family:var(--fb);font-size:15px;font-weight:600;color:white;background:linear-gradient(135deg,var(--teal),var(--teal-d));border:none;padding:14px 32px;border-radius:16px;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(19,181,162,.28)}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(19,181,162,.35)}
+.splash-note{margin-top:14px;font-size:12px;color:var(--fg-m)}
+.chat-area{flex:1;overflow-y:auto;padding:20px 16px 12px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.chat-area::-webkit-scrollbar{width:4px}
+.chat-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.msg{display:flex;gap:10px;max-width:88%;animation:fadeUp .22s ease both}
+@media(max-width:480px){.msg{max-width:95%}}
+.msg.bot{align-self:flex-start}.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg-av{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:11px;font-weight:700;margin-top:2px}
+.bot .msg-av{background:var(--teal);color:white}.user .msg-av{background:var(--navy);color:white;font-size:10px}
+.msg-bub{padding:12px 16px;border-radius:16px;font-size:15px;line-height:1.65}
+.bot .msg-bub{background:var(--surface);border:1px solid var(--border);color:var(--fg);border-bottom-left-radius:4px}
+.user .msg-bub{background:var(--navy);color:#e2eff0;border-bottom-right-radius:4px}
+.options-wrap{align-self:flex-start;display:flex;flex-direction:column;gap:8px;max-width:94%;width:100%;animation:fadeUp .25s ease both}
+.opt-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:12px 16px;cursor:pointer;transition:all .15s;font-size:14px;color:var(--fg);line-height:1.5;text-align:left;width:100%}
+.opt-card:hover{border-color:var(--teal);background:var(--teal-l)}
+.opt-card.selected{border-color:var(--teal);background:var(--teal-l);pointer-events:none}
+.opt-card strong{display:block;font-weight:600;font-size:14px;margin-bottom:2px}
+.opt-card span{font-size:13px;color:var(--fg-m)}
+.stage-pill{align-self:center;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-d);background:var(--teal-l);padding:4px 12px;border-radius:100px;margin:2px 0;animation:fadeIn .3s ease both}
+.typing{display:flex;gap:5px;align-items:center;padding:4px 2px}
+.typing span{width:7px;height:7px;background:var(--border);border-radius:50%;animation:tb 1.3s infinite ease-in-out}
+.typing span:nth-child(2){animation-delay:.18s}.typing span:nth-child(3){animation-delay:.36s}
+@keyframes tb{0%,75%,100%{transform:translateY(0);background:var(--border)}35%{transform:translateY(-5px);background:var(--teal)}}
+.complete-card{align-self:stretch;background:linear-gradient(135deg,var(--navy),var(--navy-l));border-radius:16px;padding:24px;animation:fadeUp .3s ease both;border-top:3px solid var(--teal)}
+.complete-icon{width:40px;height:40px;background:var(--teal-l);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.complete-icon svg{width:20px;height:20px}
+.complete-h{font-family:var(--fd);font-size:17px;font-weight:700;color:white;margin-bottom:8px;line-height:1.3}
+.complete-b{font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:12px}
+.complete-email{font-size:13px;color:var(--teal-l);font-weight:600}
+.input-area{flex-shrink:0;padding:12px 16px;padding-bottom:max(16px,env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border)}
+.input-row{display:flex;gap:10px;align-items:flex-end;background:var(--bg);border:1.5px solid var(--border);border-radius:16px;padding:10px 10px 10px 16px;transition:border-color .15s,box-shadow .15s}
+.input-row:focus-within{border-color:var(--teal);box-shadow:0 0 0 3px rgba(19,181,162,.1)}
+#user-input{flex:1;border:none;background:transparent;font-family:var(--fb);font-size:15px;color:var(--fg);resize:none;min-height:26px;max-height:120px;outline:none;line-height:1.55;padding:2px 0;-webkit-appearance:none}
+#user-input::placeholder{color:var(--fg-m)}
+.send-btn{width:38px;height:38px;min-width:38px;background:linear-gradient(135deg,var(--teal),var(--teal-d));border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.send-btn:hover:not(:disabled){transform:scale(1.05);box-shadow:0 4px 12px rgba(19,181,162,.35)}
+.send-btn:disabled{background:hsl(210 15% 92%);cursor:not-allowed}
+.send-btn svg{width:16px;height:16px;fill:white}
+.input-hint{font-size:11px;color:var(--fg-m);text-align:center;margin-top:8px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">Up<span>stream</span></div>
+    <div class="hbadge">Business Diagnostic</div>
+  </header>
+  <div class="prog-track"><div class="prog-fill" id="progress"></div></div>
+
+  <div class="splash" id="splash">
+    <div class="splash-eye">Free Diagnostic</div>
+    <h1 class="splash-h">Find out what's <em>actually</em> holding your consulting business back</h1>
+    <p class="splash-b">A 5-minute conversation that identifies your real bottleneck — whether you're just starting or already have clients. Full report delivered to your inbox.</p>
+    <div class="pills">
+      <div class="pill"><span class="dot"></span>5 minutes</div>
+      <div class="pill"><span class="dot"></span>Any stage</div>
+      <div class="pill"><span class="dot"></span>Full report emailed to you</div>
+    </div>
+    <button class="start-btn" onclick="startChat()">Start the Diagnostic →</button>
+    <p class="splash-note">Your information stays private and is never shared.</p>
+  </div>
+
+  <div class="chat-area hidden" id="chat"></div>
+  <div class="input-area hidden" id="input-area">
+    <div class="input-row">
+      <textarea id="user-input" placeholder="Type your answer..." rows="1" autocorrect="on" spellcheck="true"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMessage()" aria-label="Send">
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+      </button>
+    </div>
+    <div class="input-hint" id="input-hint">Enter to send · Shift+Enter for new line</div>
+  </div>
+</div>
+
+<script>
+const GHL_WEBHOOK = 'YOUR_GHL_WEBHOOK_URL_HERE'; // ← paste your GHL webhook URL
+const CLAUDE_PROXY = 'YOUR_VERCEL_PROXY_URL_HERE/api/claude'; // ← paste after Vercel deploy
+
+const SYS = `You are a business diagnostic specialist for Upstream Consulting. You help independent consultants identify the real bottleneck in their business — not the symptom they present with, but the upstream cause.
+
+The Upstream program has four phases:
+- POSITIONING: Who you serve, what you solve, why you (Person, Problem, POV)
+- PACKAGE: Offer document, sales assets, conversion flow, CRM — the infrastructure that closes
+- PIPELINE: Content system, outreach sequences, distribution — driving the right buyers in
+- INFRASTRUCTURE: Systems, templates, and repeatable processes — the operating layer that reduces rebuild time
+
+The most important diagnostic insight: most consultants think they have a pipeline problem. They're usually wrong. The real bottleneck is almost always positioning (nobody understands what they do) or package (no conversion mechanism to close the people they do reach). Pipeline without Package is a leaky bucket. Package without Positioning is a bucket with no label.
+
+Your job is to take their presenting complaint and find the actual phase that's broken.
+
+══════════════════════════════════
+PHASE 0: CONTACT CAPTURE
+══════════════════════════════════
+Collect one at a time. Warm, not clinical.
+1. Full name
+2. Email address  
+3. Phone number
+
+After phone: "Perfect. Let's figure out what's actually going on in your business."
+
+══════════════════════════════════
+PHASE 1: STAGE SELECTOR
+══════════════════════════════════
+Ask: "First — where are you right now?"
+
+Output options EXACTLY like this:
+[OPTIONS]
+A|I recently left corporate and I'm building from scratch|Don't know where to start or what to focus on first
+B|I have some clients but revenue is inconsistent — some months are fine, others terrify me|Need more clients, more consistently
+C|I'm having conversations but they're not turning into clients|Putting in effort but nothing is converting
+D|I feel overwhelmed — too many moving parts, recreating the wheel constantly|Busy but not building anything that compounds
+[/OPTIONS]
+
+══════════════════════════════════
+PHASE 2: DRILL-DOWN (3 questions, one at a time)
+══════════════════════════════════
+
+TRACK A — Building from scratch:
+Q1: "What kind of work are you thinking about doing — and who do you picture as the person you'd most want to help?"
+Q2: "Do you have a document or page that clearly explains what you offer, your process, and what someone gets when they hire you — or would you be building that from scratch too?"
+Q3: "What's your biggest fear about getting this wrong in the first 90 days?"
+
+TRACK B — Inconsistent revenue:
+Q1: "When was the last time a potential client came to you — not because you chased them, but because they'd already decided they wanted to talk? What made that happen?"
+Q2: "Do you have something a prospect can spend time with on their own — a document, a page, a piece of content — that explains your thinking and approach without your time involved?"
+Q3: "If I looked at how you describe yourself on LinkedIn right now, what would it say — and honestly, does it make the right person immediately think 'that's exactly who I need'?"
+
+TRACK C — Conversations not converting:
+Q1: "Walk me through the last discovery call that didn't close. What happened — and what did they say when they passed?"
+Q2: "After a call where someone's interested, what happens next? Is there a defined process — a document, a proposal, a next step — or does it depend on the conversation?"
+Q3: "Are you finding yourself in second and third meetings without a clear decision point? What does your close process look like right now?"
+
+TRACK D — Overwhelmed, no leverage:
+Q1: "When you think about the work that eats the most time — proposals, decks, outreach, research — how much of that are you building from scratch each time?"
+Q2: "Do you have templates, systems, or any kind of repeatable process for the business development side — or is every engagement a custom production?"
+Q3: "If you had to describe the one thing you wish you could hand off or automate, what would it be?"
+
+QUESTIONING RULES:
+- One question at a time. Never stack.
+- Push on vague answers: "I work with leaders" → "What kind? What situation are they in?"
+- If they dodge Q2 about having an offer doc or assets, note it — that's almost always the bottleneck.
+- Keep your messages short. Ask and get out of the way.
+
+══════════════════════════════════
+PHASE 3: INVISIBLE SCORECARD + REVEAL
+══════════════════════════════════
+
+After all 3 drill-down questions, do TWO things in order:
+
+STEP 1 — Output the scorecard JSON (invisible to user, parsed by frontend):
+
+[SCORECARD_JSON]
+{
+  "symptom": "their presenting complaint in their words",
+  "stage": "A|B|C|D",
+  "phases": {
+    "positioning": {
+      "rating": "STRONG|DEVELOPING|UNDEVELOPED",
+      "finding": "what you observed from the conversation",
+      "gap": "what is specifically missing or weak",
+      "cost": "what this is costing them in concrete business terms"
+    },
+    "package": {
+      "rating": "STRONG|DEVELOPING|UNDEVELOPED",
+      "finding": "...",
+      "gap": "...",
+      "cost": "..."
+    },
+    "pipeline": {
+      "rating": "STRONG|DEVELOPING|UNDEVELOPED",
+      "finding": "...",
+      "gap": "...",
+      "cost": "..."
+    },
+    "infrastructure": {
+      "rating": "STRONG|DEVELOPING|UNDEVELOPED",
+      "finding": "...",
+      "gap": "...",
+      "cost": "..."
+    }
+  },
+  "priority_phase": "positioning|package|pipeline|infrastructure",
+  "priority_reason": "one specific sentence on why this phase is the bottleneck right now",
+  "root_diagnosis": "2-3 sentences naming the real problem beneath the symptom — no jargon",
+  "symptom_summary": "one sentence summarizing what they presented with",
+  "quote_strength": "a direct quote from the conversation showing a real asset or strength",
+  "quote_gap": "a direct quote that exposes the core weakness"
+}
+[/SCORECARD_JSON]
+
+SCORING LOGIC — use this to assign ratings:
+
+POSITIONING:
+- STRONG: Can name a specific situation-based ICP, commits to one problem, has a distinct POV
+- DEVELOPING: Has a real niche but it's title-based not situation-based, or problem is too broad
+- UNDEVELOPED: Describes themselves generically ("I help leaders"), no committed problem, no POV
+
+PACKAGE:
+- STRONG: Has an offer document, pre-sell assets, defined conversion flow, uses a CRM
+- DEVELOPING: Has some materials but they're inconsistent or incomplete, no defined next step after a call
+- UNDEVELOPED: No offer doc, proposals written from scratch, no assets that sell before the call, no CRM
+
+PIPELINE:
+- STRONG: Consistent inbound, content system producing the right buyers, outreach sequences running
+- DEVELOPING: Some referrals or intermittent content, but volume is energy-dependent not systematic
+- UNDEVELOPED: No content system, no outreach, entirely dependent on chasing or luck
+
+INFRASTRUCTURE:
+- STRONG: Has reusable templates for proposals, decks, and outreach. Documented processes. Business development runs on systems, not heroics. Under 2 hrs/week to maintain.
+- DEVELOPING: Has some templates or reusable assets, but inconsistent — still rebuilding from scratch more often than not
+- UNDEVELOPED: Everything created from scratch every time. No templates, no repeatable process, no documented playbooks.
+
+PRIORITY LOGIC:
+- If POSITIONING is UNDEVELOPED → priority is always positioning first. Nothing else works without it.
+- If POSITIONING is DEVELOPING+ but PACKAGE is UNDEVELOPED → priority is package. They have conversations but nothing closes them.
+- If POSITIONING and PACKAGE are DEVELOPING+ but PIPELINE is UNDEVELOPED → priority is pipeline.
+- If all three are DEVELOPING+ but INFRASTRUCTURE is UNDEVELOPED → priority is infrastructure.
+- Track D almost always routes to infrastructure + package.
+
+STEP 2 — Reveal to user (3-4 sentences, immediately after the JSON block):
+
+Name what you heard in their language. Name the real bottleneck without jargon — describe what's missing, not what to call it. Make them feel understood, not diagnosed. Tell them their full Upstream Diagnostic Report is on its way to their email with their four-phase assessment, what each gap is costing them, and exactly where to start.
+
+Example tone (for a package gap):
+"What you're describing isn't a sales problem — it's a structure problem. You're doing the work of a sales process inside a conversation, without the assets that should be doing that work for you. The right buyer is leaving interested but unconvinced, because there's nothing there to close them after you hang up. Your full Upstream Diagnostic is on its way to [email] — it breaks down all four layers of your business and tells you exactly where to start."
+
+Always end with: [DIAGNOSTIC_COMPLETE]`;
+
+// ── state ─────────────────────────────────────────────────────────────────
+let msgs = [], loading = false, done = false, optionsActive = false;
+let contact = { name:'', email:'', phone:'' };
+let scorecardData = null;
+
+// ── chat init ─────────────────────────────────────────────────────────────
+function startChat() {
+  document.getElementById('splash').classList.add('hidden');
+  document.getElementById('chat').classList.remove('hidden');
+  document.getElementById('input-area').classList.remove('hidden');
+  document.getElementById('user-input').focus();
+  callAPI('Hi, I want to start the diagnostic.');
+}
+
+// ── render helpers ────────────────────────────────────────────────────────
+function addMsg(role, content) {
+  const chat = document.getElementById('chat');
+  const m = document.createElement('div');
+  m.className = `msg ${role}`;
+  m.innerHTML = `<div class="msg-av">${role==='bot'?'U':'Me'}</div><div class="msg-bub">${fmt(content)}</div>`;
+  chat.appendChild(m);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function addStagePill(text) {
+  const chat = document.getElementById('chat');
+  const p = document.createElement('div');
+  p.className = 'stage-pill'; p.textContent = text;
+  chat.appendChild(p);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function addOptions(options) {
+  optionsActive = true;
+  const chat = document.getElementById('chat');
+  const wrap = document.createElement('div');
+  wrap.className = 'options-wrap'; wrap.id = 'options-wrap';
+  options.forEach((opt, i) => {
+    const card = document.createElement('button');
+    card.className = 'opt-card';
+    card.innerHTML = `<strong>${opt.label}</strong><span>${opt.sub}</span>`;
+    card.onclick = () => selectOption(opt.value, opt.label, wrap);
+    wrap.appendChild(card);
+  });
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function selectOption(value, label, wrap) {
+  optionsActive = false;
+  wrap.querySelectorAll('.opt-card').forEach(c => { c.disabled = true; });
+  const idx = ['A','B','C','D'].indexOf(value);
+  if (idx >= 0) wrap.children[idx].classList.add('selected');
+  const labels = { A:'Building from scratch', B:'Growing the practice', C:'Closing conversations', D:'Fixing the chaos' };
+  addStagePill(labels[value] || value);
+  addMsg('user', label);
+  setProgress(35);
+  callAPI(label);
+}
+
+function addCompleteCard(email) {
+  const chat = document.getElementById('chat');
+  const card = document.createElement('div');
+  card.className = 'complete-card';
+  card.innerHTML = `
+    <div class="complete-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#13B5A2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/>
+      </svg>
+    </div>
+    <div class="complete-h">Your Upstream Diagnostic is on its way</div>
+    <div class="complete-b">Your full Business Diagnostic Report is being prepared — four-phase assessment, what each gap is costing you, and exactly where to start. Check your inbox in the next few minutes.</div>
+    <div class="complete-email">Sent to: ${email}</div>`;
+  chat.appendChild(card);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping() {
+  const chat = document.getElementById('chat');
+  const el = document.createElement('div');
+  el.className = 'msg bot'; el.id = 'typing';
+  el.innerHTML = `<div class="msg-av" style="background:var(--teal);color:white">U</div><div class="msg-bub"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  chat.appendChild(el);
+  chat.scrollTop = chat.scrollHeight;
+}
+function removeTyping() { const el=document.getElementById('typing'); if(el)el.remove(); }
+
+function fmt(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+}
+function setProgress(p) { document.getElementById('progress').style.width = p + '%'; }
+function setUI(disabled, finished=false) {
+  document.getElementById('user-input').disabled = disabled;
+  document.getElementById('send-btn').disabled = disabled;
+  if (finished) {
+    document.getElementById('input-hint').textContent = 'Diagnostic complete — check your inbox';
+    document.getElementById('user-input').placeholder = 'Diagnostic complete';
+  }
+}
+
+// ── parsers ───────────────────────────────────────────────────────────────
+function parseOptions(text) {
+  const m = text.match(/\[OPTIONS\]([\s\S]*?)\[\/OPTIONS\]/);
+  if (!m) return null;
+  return m[1].trim().split('\n').map(l => {
+    const p = l.split('|');
+    return { value:p[0]?.trim(), label:p[1]?.trim(), sub:p[2]?.trim() };
+  }).filter(o => o.value && o.label);
+}
+
+function parseScorecard(text) {
+  const m = text.match(/\[SCORECARD_JSON\]([\s\S]*?)\[\/SCORECARD_JSON\]/);
+  if (!m) return null;
+  try { return JSON.parse(m[1].trim()); } catch(e) { console.error('JSON parse error', e); return null; }
+}
+
+function extractContact(msgs) {
+  const userText = msgs.filter(m=>m.role==='user').map(m=>m.content).join(' ');
+  const email = userText.match(/[\w.+-]+@[\w-]+\.[\w.]+/)?.[0] || '';
+  const phone = userText.match(/(\+?[\d\s\-().]{10,})/)?.[0]?.trim() || '';
+  const nameMsg = msgs.find((m,i) => m.role==='user' && i <= 4 && m.content.length < 60 && !m.content.includes('@') && !/\d{5,}/.test(m.content));
+  return { email, phone, name: nameMsg?.content || '' };
+}
+
+// ── ghl webhook ───────────────────────────────────────────────────────────
+async function postToGHL(contactInfo, sc) {
+  if (!GHL_WEBHOOK || GHL_WEBHOOK === 'YOUR_GHL_WEBHOOK_URL_HERE') {
+    console.log('GHL not configured. Payload:', { contactInfo, sc }); return;
+  }
+  const tags = [
+    `stage-${sc.stage?.toLowerCase()}`,
+    `priority-${sc.priority_phase}`,
+    `positioning-${sc.phases?.positioning?.rating?.toLowerCase()}`,
+    `package-${sc.phases?.package?.rating?.toLowerCase()}`,
+    `pipeline-${sc.phases?.pipeline?.rating?.toLowerCase()}`,
+    `infra-${sc.phases?.infrastructure?.rating?.toLowerCase()}`,
+    'diagnostic-complete'
+  ];
+  try {
+    await fetch(GHL_WEBHOOK, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        firstName: contactInfo.name.split(' ')[0] || contactInfo.name,
+        lastName: contactInfo.name.split(' ').slice(1).join(' ') || '',
+        email: contactInfo.email,
+        phone: contactInfo.phone,
+        source: 'Upstream Diagnostic Bot',
+        tags,
+        customFields: {
+          diagnostic_symptom:      sc.symptom,
+          diagnostic_stage:        sc.stage,
+          priority_phase:          sc.priority_phase,
+          priority_reason:         sc.priority_reason,
+          root_diagnosis:          sc.root_diagnosis,
+          positioning_rating:      sc.phases?.positioning?.rating,
+          package_rating:          sc.phases?.package?.rating,
+          pipeline_rating:         sc.phases?.pipeline?.rating,
+          infrastructure_rating:   sc.phases?.infrastructure?.rating,
+          quote_strength:          sc.quote_strength,
+          quote_gap:               sc.quote_gap,
+          scorecard_json:          JSON.stringify(sc)
+        }
+      })
+    });
+    console.log('GHL sent');
+  } catch(e) { console.error('GHL error', e); }
+}
+
+// ── api call ──────────────────────────────────────────────────────────────
+async function callAPI(userText) {
+  if (loading) return;
+  loading = true; setUI(true);
+  msgs.push({ role:'user', content:userText });
+  showTyping();
+  try {
+    const res = await fetch(CLAUDE_PROXY, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1400, system:SYS, messages:msgs })
+    });
+    const data = await res.json();
+    removeTyping();
+    const reply = data?.content?.[0]?.text || 'Something went wrong. Please refresh.';
+    msgs.push({ role:'assistant', content:reply });
+
+    const c = extractContact(msgs);
+    if (c.email) contact.email = c.email;
+    if (c.phone) contact.phone = c.phone;
+    if (c.name)  contact.name  = c.name;
+
+    let display = reply
+      .replace(/\[SCORECARD_JSON\][\s\S]*?\[\/SCORECARD_JSON\]/g, '')
+      .replace(/\[DIAGNOSTIC_COMPLETE\]/g, '')
+      .replace(/\[OPTIONS\][\s\S]*?\[\/OPTIONS\]/g, '')
+      .trim();
+
+    const opts = parseOptions(reply);
+    if (opts) {
+      if (display) addMsg('bot', display);
+      addOptions(opts);
+      setProgress(20);
+      setUI(false); loading = false; return;
+    }
+
+    const sc = parseScorecard(reply);
+    if (sc) scorecardData = sc;
+
+    if (reply.includes('[DIAGNOSTIC_COMPLETE]')) {
+      if (display) addMsg('bot', display);
+      addCompleteCard(contact.email || 'your email');
+      done = true; setUI(true, true); setProgress(100);
+      if (scorecardData) await postToGHL(contact, scorecardData);
+    } else {
+      if (display) addMsg('bot', display);
+      const userCount = msgs.filter(m=>m.role==='user').length;
+      setProgress(Math.min(88, 20 + userCount * 12));
+      setUI(false);
+      document.getElementById('user-input').focus();
+    }
+  } catch(e) {
+    removeTyping();
+    addMsg('bot','Connection error. Please refresh and try again.');
+    setUI(false); console.error(e);
+  }
+  loading = false;
+}
+
+// ── send ──────────────────────────────────────────────────────────────────
+async function sendMessage() {
+  if (loading || done || optionsActive) return;
+  const inp = document.getElementById('user-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  addMsg('user', text);
+  inp.value = ''; inp.style.height = 'auto';
+  await callAPI(text);
+}
+
+document.addEventListener('keydown', e => {
+  if (document.activeElement === document.getElementById('user-input') && e.key==='Enter' && !e.shiftKey) {
+    e.preventDefault(); sendMessage();
+  }
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'user-input') {
+    e.target.style.height = 'auto';
+    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+  }
+});
+if (/iPhone|iPad/.test(navigator.userAgent)) {
+  window.addEventListener('resize', () => {
+    const c = document.getElementById('chat'); if(c) c.scrollTop = c.scrollHeight;
+  });
+}
+</script>
+</body>
+</html>
