@@ -149,7 +149,27 @@ Do not invent content to fill gaps.
 
 ---
 
-## HOW TO START EACH SESSION
+## CURRENT STATE
+
+### Built and deployed
+- **Content Strategist Bot** — system prompt complete. Lives in "Upstream — Content Strategist" Claude.ai Project. Governs pillar strategy, content calendar, platform prioritization, and repurposing system. Core mechanic: short-form is never created from scratch — always extracted from longform. One longform piece = minimum 5 short-form assets.
+
+### Built, pending deployment
+- **Upstream Diagnostic Bot** — chatbot HTML and Vercel proxy ready. Blocked on Vercel deploy + Claude API key configuration + GHL workflow setup.
+
+### Not yet built
+- Business Strategy Bot
+- Marketer Bot
+- Researcher Bot
+- Hook/Title Bot
+- Outline Bot
+- Writer Bot
+- Repurpose Bot
+- Visual Bot
+- Sales Coach Bot
+- Session Prep Bot
+- Client Asset Bot
+- Weekly Review Bot
 
 When Michael opens this project, ask:
 1. "What are we building or solving today?"
